@@ -1,0 +1,19 @@
+services:
+  frontend:
+    image: ghcr.io/cyril-codes/frontend:${GIT_COMMIT_HASH}
+    networks:
+      - backend_traefik
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.frontend.rule=Host(`cyril.codes`)"
+      - "traefik.http.routers.frontend.entrypoints=websecure"
+      - "traefik.http.routers.frontend.tls.certresolver=myresolver"
+      - "traefik.docker.network=backend_traefik"
+      - "traefik.http.services.frontend.loadbalancer.server.port=3000"
+    deploy:
+      update_config:
+        order: start-first
+
+networks:
+  backend_traefik:
+    external: true
